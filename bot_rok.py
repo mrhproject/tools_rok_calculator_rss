@@ -24,6 +24,50 @@ def tampilkan_logo():
     """
     print(logo)
 
+def verifikasi_user():
+    """ Fungsi untuk memvalidasi token akses user ke Google Apps Script Cloud """
+    G = "\033[0;32m"  # Hijau
+    R = "\033[0;31m"  # Merah
+    N = "\033[0m"     # Reset
+    
+    print(f"{G}🔐 [SECURITY] Sistem Verifikasi Akses Mr H Digital{N}")
+    token_input = input("Masukkan Kunci Akses / Token Anda: ").strip()
+    
+    if not token_input:
+        print(f"{R}❌ Token tidak boleh kosong!{N}")
+        return False
+        
+    print("⏳ Memeriksa hak akses ke server Cloud...")
+    
+    try:
+        # Membuat payload verifikasi temporer
+        payload_verify = json.dumps({'action': 'verify', 'token': token_input})
+        with open('verify_temp.json', 'w', encoding='utf-8') as f:
+            f.write(payload_verify)
+            
+        # Tembak langsung ke Web App GAS kamu
+        cmd = ['curl', '-s', '-X', 'POST', '-H', 'Content-Type: application/json', '-d', '@verify_temp.json', URL_WEB_APP]
+        response = subprocess.check_output(cmd).decode('utf-8').strip()
+        
+        # Hapus file sampah verifikasi
+        if os.path.exists('verify_temp.json'):
+            os.remove('verify_temp.json')
+            
+        # Cek respon dari Web App kamu
+        if "VALID" in response:
+            print(f"{G}✅ AKSES DIIZINKAN! Selamat bekerja, Bre!{N}\n")
+            return True
+        else:
+            print(f"{R}❌ AKSES DITOLAK! Token salah atau sudah kedaluwarsa.{N}")
+            print(f"{R}   Silakan hubungi Mr H Digital untuk mendapatkan akses.{N}")
+            return False
+            
+    except Exception as e:
+        print(f"{R}❌ Gagal terhubung ke server verifikasi: {e}{N}")
+        if os.path.exists('verify_temp.json'):
+            os.remove('verify_temp.json')
+        return False
+
 def cari_folder_ss_otomatis():
     """ Fungsi AI pintar untuk melacak letak folder screenshot di setiap OS Android/Huawei """
     posisi_pencarian = ['/sdcard/DCIM/', '/sdcard/Pictures/', '/sdcard/MyFiles/', '/sdcard/']
@@ -42,6 +86,11 @@ def cari_folder_ss_otomatis():
 
 # --- EKSEKUSI UTAMA SAAT BOT PERTAMA NYALA ---
 tampilkan_logo()
+
+# Jalankan proteksi verifikasi cloud terlebih dahulu
+if not verifikasi_user():
+    print("\n🛑 [STOP] Program dihentikan otomatis.")
+    exit()
 
 FOLDER_SCREENSHOT = cari_folder_ss_otomatis()
 file_log = 'terakhir_dikirim.txt'
