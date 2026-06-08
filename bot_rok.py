@@ -47,18 +47,25 @@ def verifikasi_user():
             
         # Tembak langsung ke Web App GAS kamu
         cmd = ['curl', '-s', '-X', 'POST', '-H', 'Content-Type: application/json', '-d', '@verify_temp.json', URL_WEB_APP]
-        response = subprocess.check_output(cmd).decode('utf-8').strip()
+        raw_response = subprocess.check_output(cmd).decode('utf-8')
+        
+        # SAKTI: Bersihkan respon dari segala spasi tak terlihat, baris baru, dan konversi ke huruf besar
+        response = raw_response.strip().upper()
         
         # Hapus file sampah verifikasi
         if os.path.exists('verify_temp.json'):
             os.remove('verify_temp.json')
             
-        # Cek respon dari Web App kamu
-        if "VALID" in response:
+        # Cek respon dari Web App kamu dengan validasi berlapis
+        if "VALID" in response and "INVALID" not in response:
             print(f"{G}✅ AKSES DIIZINKAN! Selamat bekerja, Bre!{N}\n")
             return True
+        elif "EXPIRED" in response:
+            print(f"{R}❌ PAKET HABIS! Masa aktif token Anda telah kedaluwarsa.{N}")
+            print(f"{R}   Silakan hubungi Mr H Digital untuk perpanjang paket.{N}")
+            return False
         else:
-            print(f"{R}❌ AKSES DITOLAK! Token salah atau sudah kedaluwarsa.{N}")
+            print(f"{R}❌ AKSES DITOLAK! Token salah atau tidak terdaftar.{N}")
             print(f"{R}   Silakan hubungi Mr H Digital untuk mendapatkan akses.{N}")
             return False
             
