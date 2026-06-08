@@ -6,6 +6,24 @@ import subprocess
 import time
 from config import URL_WEB_APP
 
+def tampilkan_logo():
+    G = "\033[0;32m"  # Warna Hijau Cerah
+    N = "\033[0m"     # Warna Normal Kembali
+    
+    logo = f"""
+{G}███╗   ███╗██████╗     ██╗  ██╗    ██████╗ ██╗ ██████╗ ██╗████████╗ █████╗ ██╗     
+████╗ ████║██╔══██╗    ██║  ██║    ██╔══██╗██║██╔════╝ ██║╚══██╔══╝██╔══██╗██║     
+██╔████╔██║██████╔╝    ███████║    ██║  ██║██║██║  ███╗██║   ██║   ███████║██║     
+██║╚██╔╝██║██╔══██╗    ██╔══██║    ██║  ██║██║██║   ██║██║   ██║   ██╔══██║██║     
+██║ ╚═╝ ██║██║  ██║    ██║  ██║    ██████╔╝██║╚██████╔╝██║   ██║   ██║  ██║███████╗
+╚═╝     ╚═╝╚═╝  ╚═╝    ╚═╝  ╚═╝    ╚═════╝ ╚═╝ ╚═════╝ ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝
+                                    
+                              ✨ ᴹʳ 𝐇 𝐃𝐢𝐠𝐢𝐭𝐚 l ࿐ ✨
+                       🤖 AI-Universal Auto-RSS Standby 🤖
+==================================================================================={N}
+    """
+    print(logo)
+
 def cari_folder_ss_otomatis():
     """ Fungsi AI pintar untuk melacak letak folder screenshot di setiap OS Android/Huawei """
     posisi_pencarian = ['/sdcard/DCIM/', '/sdcard/Pictures/', '/sdcard/MyFiles/', '/sdcard/']
@@ -22,12 +40,15 @@ def cari_folder_ss_otomatis():
     # Opsi cadangan standar jika tidak terdeteksi sama sekali
     return '/sdcard/DCIM/Screenshots/*'
 
-# Eksekusi pencarian otomatis saat bot pertama kali dijalankan
+# --- EKSEKUSI UTAMA SAAT BOT PERTAMA NYALA ---
+tampilkan_logo()
+
 FOLDER_SCREENSHOT = cari_folder_ss_otomatis()
 file_log = 'terakhir_dikirim.txt'
 
 print('🤖 [START] Bot RoK Auto-Standby AI-Universal Aktif...')
 print(f'🎯 Folder Terdeteksi: {FOLDER_SCREENSHOT.replace("/*", "")}')
+print('⏳ Siap siaga! Silakan lakukan screenshot hasil panen di dalam game RoK...\n')
 
 while True:
     try:
