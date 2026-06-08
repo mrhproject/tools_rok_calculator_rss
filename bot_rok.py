@@ -6,25 +6,35 @@ import subprocess
 import time
 from config import URL_WEB_APP
 
-# Daftar jalur folder screenshot universal di Android & Huawei
-JALUR_SS = [
-    '/sdcard/DCIM/Screenshots/*',
-    '/sdcard/Pictures/Screenshots/*'
-]
+def cari_folder_ss_otomatis():
+    """ Fungsi AI pintar untuk melacak letak folder screenshot di setiap OS Android/Huawei """
+    posisi_pencarian = ['/sdcard/DCIM/', '/sdcard/Pictures/', '/sdcard/MyFiles/', '/sdcard/']
+    nama_target = ['Screenshots', 'Screenshot', 'TangkapanLayar']
+    
+    for posisi in posisi_pencarian:
+        if os.path.exists(posisi):
+            for target in nama_target:
+                jalur_cek = os.path.join(posisi, target)
+                # Jika folder ditemukan dan valid, langsung kunci jalurnya
+                if os.path.exists(jalur_cek) and os.path.isdir(jalur_cek):
+                    return jalur_cek + '/*'
+                    
+    # Opsi cadangan standar jika tidak terdeteksi sama sekali
+    return '/sdcard/DCIM/Screenshots/*'
+
+# Eksekusi pencarian otomatis saat bot pertama kali dijalankan
+FOLDER_SCREENSHOT = cari_folder_ss_otomatis()
 file_log = 'terakhir_dikirim.txt'
 
-print('🤖 [START] Bot RoK Auto-Standby Multi-Device Aktif...')
-print('💡 Bot otomatis mendeteksi folder SS internal perangkat.')
+print('🤖 [START] Bot RoK Auto-Standby AI-Universal Aktif...')
+print(f'🎯 Folder Terdeteksi: {FOLDER_SCREENSHOT.replace("/*", "")}')
 
 while True:
     try:
-        # Kumpulkan semua file dari berbagai jalur folder
-        list_files = []
-        for jalur in JALUR_SS:
-            list_files.extend(glob.glob(jalur))
+        # Kumpulkan semua file dan pastikan membuang sub-folder (seperti folder /Games)
+        list_files = [f for f in glob.glob(FOLDER_SCREENSHOT) if os.path.isfile(f)]
             
         if list_files:
-            # Cari yang paling baru di antara semua folder
             ss_terbaru = max(list_files, key=os.path.getctime)
             nama_file = os.path.basename(ss_terbaru)
             
