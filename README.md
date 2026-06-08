@@ -41,14 +41,3 @@ Masuk ke Pengaturan Perangkat > Aplikasi > Peluncuran Aplikasi (App Launch) > Ca
 
 Developed by MrH Project 🚀🔥
 
-
----
-
-### 💾 Cara Eksekusi Terakhir di GitHub Browser:
-1. Buka repository: `[https://github.com/mrhproject/tools_rok_calculator_rss](https://github.com/mrhproject/tools_rok_calculator_rss)`.
-2. Klik file **`README.md`**.
-3. Klik **ikon pensil** di kanan atas untuk mengedit.
-4. Hapus total semua tulisan lama yang ada di sana.
-5. *Paste* kode penuh di atas ke dalam kotak, lalu klik tombol hijau **`Commit changes...`** di pojok kanan atas.
-
-Sekarang lapak repository asisten pertanian RoK kamu sudah resmi beres, tampan, rapi, dan siap
