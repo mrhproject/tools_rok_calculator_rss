@@ -18,7 +18,7 @@ def tampilkan_logo():
 ██║ ╚═╝ ██║██║  ██║    ██║  ██║    ██████╔╝██║╚██████╔╝██║   ██║   ██║  ██║███████╗
 ╚═╝     ╚═╝╚═╝  ╚═╝    ╚═╝  ╚═╝    ╚═════╝ ╚═╝ ╚═════╝ ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝
                                     
-                              ✨ ᴹʳ 𝐇 𝐃𝐢𝐠𝐢𝐭𝐚 l ࿐ ✨
+                              ✨ ᴹʳ 𝐇 𝐃𝐢𝐠i𝐭𝐚 l ࿐ ✨
                        🤖 AI-Universal Auto-RSS Standby 🤖
 ==================================================================================={N}
     """
@@ -45,19 +45,19 @@ def verifikasi_user():
         with open('verify_temp.json', 'w', encoding='utf-8') as f:
             f.write(payload_verify)
             
-        # Tembak langsung ke Web App GAS kamu
-        cmd = ['curl', '-s', '-X', 'POST', '-H', 'Content-Type: application/json', '-d', '@verify_temp.json', URL_WEB_APP]
+        # SAKTI: Wajib ditambah parameter '-L' agar curl mengejar pengalihan (redirect) dari Google Apps Script!
+        cmd = ['curl', '-s', '-L', '-X', 'POST', '-H', 'Content-Type: application/json', '-d', '@verify_temp.json', URL_WEB_APP]
         raw_response = subprocess.check_output(cmd).decode('utf-8')
         
-        # SAKTI: Bersihkan respon dari segala spasi tak terlihat, baris baru, dan konversi ke huruf besar
+        # SAKTI: Bersihkan respon dari spasi tak terlihat, baris baru, dan konversi ke huruf besar
         response = raw_response.strip().upper()
         
         # Hapus file sampah verifikasi
         if os.path.exists('verify_temp.json'):
             os.remove('verify_temp.json')
             
-        # Cek respon dari Web App kamu dengan validasi berlapis
-        if "VALID" in response and "INVALID" not in response:
+        # AKURAT: Cek respon dengan fleksibilitas tinggi (Mendukung kata VALID maupun struktur balasan SUCCESS dari GAS)
+        if "VALID" in response or "SUCCESS" in response:
             print(f"{G}✅ AKSES DIIZINKAN! Selamat bekerja, Bre!{N}\n")
             return True
         elif "EXPIRED" in response:
@@ -66,7 +66,7 @@ def verifikasi_user():
             return False
         else:
             print(f"{R}❌ AKSES DITOLAK! Token salah atau tidak terdaftar.{N}")
-            print(f"{R}   Silakan hubungi Mr H Digital untuk mendapatkan akses.{N}")
+            print(f"{R}   Respon Server Berisi Kode Luar/HTML: Gagal Parsing Token.{N}")
             return False
             
     except Exception as e:
@@ -84,11 +84,9 @@ def cari_folder_ss_otomatis():
         if os.path.exists(posisi):
             for target in nama_target:
                 jalur_cek = os.path.join(posisi, target)
-                # Jika folder ditemukan dan valid, langsung kunci jalurnya
                 if os.path.exists(jalur_cek) and os.path.isdir(jalur_cek):
                     return jalur_cek + '/*'
                     
-    # Opsi cadangan standar jika tidak terdeteksi sama sekali
     return '/sdcard/DCIM/Screenshots/*'
 
 # --- EKSEKUSI UTAMA SAAT BOT PERTAMA NYALA ---
@@ -108,7 +106,7 @@ print('⏳ Siap siaga! Silakan lakukan screenshot hasil panen di dalam game RoK.
 
 while True:
     try:
-        # Kumpulkan semua file dan pastikan membuang sub-folder (seperti folder /Games)
+        # Kumpulkan semua file dan pastikan membuang sub-folder
         list_files = [f for f in glob.glob(FOLDER_SCREENSHOT) if os.path.isfile(f)]
             
         if list_files:
@@ -130,7 +128,8 @@ while True:
                 
                 print('🚀 Mengirim otomatis ke Cloud...')
                 
-                cmd = ['curl', '-s', '-X', 'POST', '-H', 'Content-Type: application/json', '-d', '@payload_temp.json', URL_WEB_APP]
+                # SAKTI: Tambah -L juga pada pengiriman data ocr agar sinkronisasi bypass redirect Google berjalan mulus
+                cmd = ['curl', '-s', '-L', '-X', 'POST', '-H', 'Content-Type: application/json', '-d', '@payload_temp.json', URL_WEB_APP]
                 subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 
                 with open(file_log, 'w') as f:
