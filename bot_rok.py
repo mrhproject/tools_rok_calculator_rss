@@ -4,10 +4,38 @@ import base64
 import json
 import subprocess
 import time
+import uuid  # 🔥 Library bawaan Python untuk generate ID Unik
 from config import URL_WEB_APP
 
+# =========================================================================
+# 🔥 ENGINE PENGUNCI DEVICE ID PERMANEN (ANTI GANTI / ANTI RESET)
+# =========================================================================
+def dapatkan_device_id_permanen():
+    nama_file_id = '.device_id.txt'  # File teks tersembunyi di folder bot
+    
+    # 1. Cek apakah perangkat ini sudah punya "KTP" ID atau belum
+    if os.path.exists(nama_file_id):
+        # Jika sudah ada, baca ID lama yang tersimpan permanen
+        with open(nama_file_id, 'r', encoding='utf-8') as f:
+            device_id = f.read().strip()
+    else:
+        # Jika belum ada (HP baru), generate kode acak unik murni
+        id_acak = str(uuid.uuid4()).replace('-', '')[:12].upper() 
+        device_id = f"MRH-{id_acak}"  # Format keren, contoh: MRH-A1B2C3D4E5F6
+        
+        # Kunci dan simpan ke file lokal agar tidak hilang saat bot mati/restart
+        with open(nama_file_id, 'w', encoding='utf-8') as f:
+            f.write(device_id)
+            
+    return device_id
+
+# Kunci ID Perangkat untuk sesi ini
+DEVICE_UNIQUE_ID = dapatkan_device_id_permanen()
+# =========================================================================
+
 def tampilkan_logo():
-    G = "\033;32m"  # Warna Hijau Cerah
+    G = "\033[0;32m"  # Warna Hijau Cerah
+    Y = "\033[0;33m"  # Warna Kuning Cerah untuk ID Perangkat
     N = "\033[0m"     # Warna Normal Kembali
     
     logo = f"""
@@ -16,12 +44,14 @@ def tampilkan_logo():
 ██╔████╔██║██████╔╝    ███████║    ██║  ██║██║██║  ███╗██║   ██║   ███████║██║     
 ██║╚██╔╝██║██╔══██╗    ██╔══██║    ██║  ██║██║██║   ██║██║   ██║   ██╔══██║██║     
 ██║ ╚═╝ ██║██║  ██║    ██║  ██║    ██████╔╝██║╚██████╔╝██║   ██║   ██║  ██║███████╗
-╚═╝     ╚═╝╚═╝  ╚═╝    ╚═╝  ╚═╝    ╚═════╝ ╚═╝ ╚═════╝ ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝
+╚═╝     ╚═╝╚═╝  ╚═╝    ╚═╝  ╚═╝    ╚═════╝ ╚═╝ ╚═════╝ ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝{N}
                                     
                               ✨ ᴹʳ 𝐇 𝐃𝐢𝐠𝐢𝐭𝐚 l ࿐ ✨
                        🤖 AI-Universal Auto-RSS Standby 🤖
                     [MODE BYPASS SINKRONISASI AKTIF]
-==================================================================================={N}
+===================================================================================
+🔑 {Y}ID PERANGKAT ABADI (KTP): {DEVICE_UNIQUE_ID}{N}
+===================================================================================
     """
     print(logo)
 
@@ -81,7 +111,12 @@ while True:
                 with open(ss_terbaru, 'rb') as img:
                     encoded = base64.b64encode(img.read()).decode('utf-8')
                 
-                payload = json.dumps({'image': encoded, 'filename': nama_file})
+                # 🔥 SAKTI: ID Abadi perangkat disisipkan ke dalam paket data gambar yang dikirim ke Cloud
+                payload = json.dumps({
+                    'image': encoded, 
+                    'filename': nama_file,
+                    'user_id': DEVICE_UNIQUE_ID
+                })
                 
                 with open('payload_temp.json', 'w', encoding='utf-8') as f:
                     f.write(payload)
