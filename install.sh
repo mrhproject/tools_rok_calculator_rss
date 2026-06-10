@@ -20,9 +20,10 @@ echo ""
 
 # 1. Update system & install package bawaan + Dependensi Kompresi Gambar
 echo -e "${G}[1/5] Memperbarui sistem Termux & menginstal core packages...${N}"
-pkg update && pkg upgrade -y
+# FIX: Menggunakan apt update & apt full-upgrade agar sinkronisasi pustaka SSL/Curl tidak tabrakan dan aman dari dpkg error
+apt update && apt full-upgrade -y
 
-# Kunci penting: libjpeg-turbo dan zlib wajib ada di Termux untuk proses Pillow (Kompresi Gambar)
+# Pastikan core package terpasang sempurna
 pkg install python git termux-api libjpeg-turbo zlib -y
 
 # 2. Setup Storage (Meminta izin akses folder Galeri HP)
