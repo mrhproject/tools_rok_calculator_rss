@@ -6,10 +6,12 @@ echo -e "${G}=== INSTALASI OTOMATIS TOOLS ROK CALCULATOR RSS ===${N}"
 
 # 1. Update system & install package bawaan kamu
 pkg update && pkg upgrade -y
+pkg install git
 pkg install python git termux-api -y
 termux-setup-storage
 pip install --upgrade pip
 pip install requests
+
 
 # 2. SELEBRAM BARU: Suntik otomatis alias mrh_update_stock ke .bashrc
 echo -e "${G}=== MENGINSTAL ALIAS SAKTI 'mrh_update_stock' ===${N}"
