@@ -123,24 +123,9 @@ while True:
             # Deteksi jika benar-benar ada jepretan baru
             if nama_file != last_sent:
                 print(f'📸 Terdeteksi SS Baru: {nama_file}')
-                
-                # 🛠️ FIX STUCK: Pastikan Android/Emulator selesai menulis file ke storage (Anti-0KB / Anti-Corrupt)
-                ukuran_lama = -1
-                percobaan = 0
-                while percobaan < 5:
-                    try:
-                        ukuran_baru = os.path.getsize(ss_terbaru)
-                        if ukuran_baru > 0 and ukuran_baru == ukuran_lama:
-                            break  # Ukuran file stabil, penulisan selesai sepenuhnya
-                        ukuran_lama = ukuran_baru
-                    except:
-                        pass
-                    time.sleep(0.5)  # Beri jeda 500 milidetik agar sistem menyelesaikan penulisan
-                    percobaan += 1
-                
                 print('⚡ Menjalankan Engine Kompresi Gambar MRH Digital (RAM Mode)...')
                 
-                # Buka gambar, turunkan resolusi skala proporsional & turunkan kualitas ke 75%
+                # 🛠️ STRATEGI OPTIMASI 1: Buka gambar, turunkan resolusi skala proporsional & turunkan kualitas ke 75%
                 with Image.open(ss_terbaru) as img:
                     # Konversi ke mode RGB jika formatnya PNG agar bisa disimpan sebagai JPEG kompresi tinggi
                     if img.mode in ("RGBA", "P"):
@@ -177,7 +162,7 @@ while True:
                         f.write(nama_file)
                     print('✅ Transaksi Sukses! Data masuk Database.')
                     
-                    # Auto-Delete file screenshot asli di HP biar penyimpanan lega
+                    # 🛠️ STRATEGI OPTIMASI 2: Auto-Delete file screenshot asli di HP biar penyimpanan lega
                     try:
                         if os.path.exists(ss_terbaru):
                             os.remove(ss_terbaru)
@@ -190,16 +175,5 @@ while True:
                                 
     except Exception as e:
         print(f'❌ Sistem Mengalami Gangguan: {e}')
-        
-        # 🛠️ KATUP DARURAT JALUR BYPASS: Jika file benar-benar corrupt dan tidak bisa dibaca Pillow
-        if "cannot identify image file" in str(e) and 'ss_terbaru' in locals():
-            try:
-                with open(file_log, 'w', encoding='utf-8') as f:
-                    f.write(nama_file)
-                if os.path.exists(ss_terbaru):
-                    os.remove(ss_terbaru)
-                print("🚨 [BYPASS] Berkas gambar rusak dibersihkan dari antrean agar bot tidak macet!")
-            except:
-                pass
         
     time.sleep(3)
