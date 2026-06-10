@@ -6,7 +6,6 @@ echo -e "${G}=== INSTALASI OTOMATIS TOOLS ROK CALCULATOR RSS ===${N}"
 
 # 1. Update system & install package bawaan kamu
 pkg update && pkg upgrade -y
-pkg install git
 pkg install python git termux-api -y
 termux-setup-storage
 pip install --upgrade pip
