@@ -1,5 +1,4 @@
 import os
-import glob
 import base64
 import json
 import time
@@ -10,13 +9,13 @@ from io import BytesIO
 # ⚡ VALIDASI DEPENDENSI UTAMA (AUTO-INSTALLER)
 try:
     import requests
-    from PIL import Image
+    from PIL import Image, ImageEnhance
 except ImportError:
     print("⏳ Menyiapkan library tambahan (requests & pillow)...")
     os.system('pkg install libjpeg-turbo-dev zlib-dev -y &> /dev/null')
     os.system('pip install requests pillow &> /dev/null')
     import requests
-    from PIL import Image
+    from PIL import Image, ImageEnhance
 
 from config import URL_WEB_APP
 
@@ -54,16 +53,16 @@ def tampilkan_logo():
     N = "\033[0m"     # Normal
     
     logo = f"""
-{G}███╗   ███╗██████╗      ██╗  ██╗    ██████╗ ██╗ ██████╗ ██╗████████╗ █████╗ ██╗     
-████╗ ████║██╔══██╗     ██║  ██║    ██╔══██╗██║██╔════╝ ██║╚══██╔══╝██╔══██╗██║     
-██╔████╔██║██████╔╝     ███████║    ██║  ██║██║██║  ███╗██║   ██║   ███████║██║     
-██║╚██╔╝██║██╔══██╗     ██╔══██║    ██║  ██║██║██║   ██║██║   ██║   ██╔══██║██║     
-██║ ╚═╝ ██║██║  ██║     ██║  ██║    ██████╔╝██║╚██████╔╝██║   ██║   ██║  ██║███████╗
-╚═╝     ╚═╝╚═╝  ╚═╝     ╚═╝  ╚═╝    ╚═════╝ ╚═╝ ╚═════╝ ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝{N}
+{G}███╗   ███╗██████╗       ██╗  ██╗    ██████╗ ██╗ ██████╗ ██╗████████╗ █████╗ ██╗     
+████╗ ████║██╔══██╗      ██║  ██║    ██╔══██╗██║██╔════╝ ██║╚══██╔══╝██╔══██╗██║     
+██╔████╔██║██████╔╝      ███████║    ██║  ██║██║██║  ███╗██║   ██║   ███████║██║     
+██║╚██╔╝██║██╔══██╗      ██╔══██║    ██║  ██║██║██║   ██║██║   ██║   ██╔══██║██║     
+██║ ╚═╝ ██║██║  ██║      ██║  ██║    ██████╔╝██║╚██████╔╝██║   ██║   ██║  ██║███████╗
+╚═╝     ╚═╝╚═╝  ╚═╝      ╚═╝  ╚═╝    ╚═════╝ ╚═╝ ╚═════╝ ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝{N}
                                     
-               ✨ ᴹʳ 𝐇 𝐃𝐢𝐠𝐢𝐭𝐚 l ࿐ ✨
-            🤖 AI-Universal Auto-RSS Standby 🤖
-         [MODE SUPREME SPEED & AUTO-CLEAN HQ AKTIF]
+                ✨ ᴹʳ 𝐇 𝐃𝐢𝐠𝐢𝐭𝐚 l ࿐ ✨
+             🤖 AI-Universal Auto-RSS Standby 🤖
+          [MODE SUPREME SPEED & AUTO-CLEAN HQ AKTIF]
 ===================================================================================
 🔑 {Y}ID PERANGKAT ABADI (KTP): {DEVICE_UNIQUE_ID}{N}
 ===================================================================================
@@ -105,20 +104,33 @@ print('🤖 [START] Bot RoK Auto-Standby AI-Universal Supreme Aktif...')
 print(f'🎯 Folder Pantauan: {FOLDER_TARGET}')
 print('⏳ Siap siaga! Cukup lakukan screenshot di game RoK, data meluncur otomatis...\n')
 
+# Kumpulan format gambar yang diizinkan (Set murni agar pencarian instan)
+VALID_EXTENSIONS = {'.jpg', '.jpeg', '.png'}
+
 # =========================================================================
-# 🔄 MONITORING LOOP RUNTIME
+# 🔄 MONITORING LOOP RUNTIME (OPTIMIZED VERSION v5.0)
 # =========================================================================
 while True:
     try:
-        # Saring file gambar secara selektif untuk menghemat daya proses CPU
-        list_files = []
-        for ext in ('/*.jpg', '/*.jpeg', '/*.png', '/*.JPG', '/*.JPEG', '/*.PNG'):
-            list_files.extend(glob.glob(FOLDER_TARGET + ext))
-            
-        if list_files:
-            # Ambil screenshot paling gres / terbaru
-            ss_terbaru = max(list_files, key=os.path.getctime)
-            nama_file = os.path.basename(ss_terbaru)
+        terbaru_entry = None
+        terbaru_ctime = 0
+        
+        # 🔥 OPTIMASI 1: Ganti glob kaku dengan os.scandir (Baterai awet, RAM adem)
+        if os.path.exists(FOLDER_TARGET):
+            with os.scandir(FOLDER_TARGET) as entries:
+                for entry in entries:
+                    if entry.is_file() and os.path.splitext(entry.name)[1].lower() in VALID_EXTENSIONS:
+                        try:
+                            file_ctime = entry.stat().st_ctime
+                            if file_ctime > terbaru_ctime:
+                                terbaru_ctime = file_ctime
+                                terbaru_entry = entry
+                        except OSError:
+                            continue  # Lewati jika file sedang dikunci sistem Android
+
+        if terbaru_entry:
+            ss_terbaru = terbaru_entry.path
+            nama_file = terbaru_entry.name
             
             # Baca logs riwayat
             last_sent = ''
@@ -129,24 +141,44 @@ while True:
             # Deteksi jika benar-benar ada jepretan baru
             if nama_file != last_sent:
                 print(f'📸 Terdeteksi SS Baru: {nama_file}')
-                print('⚡ Menjalankan Engine Kompresi Gambar MRH Digital (RAM Mode)...')
                 
-                # 🛠️ TWEAK RESOLUSI & KOMPRESI HQ: AI Google Cloud dijamin lancar baca teks angka
+                # 🔥 OPTIMASI 2: Tunggu sampai Android selesai menulis gambar ke memori (Anti-Corrupt)
+                time.sleep(0.5)
+                ukuran_lama = -1
+                while True:
+                    try:
+                        ukuran_baru = os.path.getsize(ss_terbaru)
+                        if ukuran_baru == ukuran_lama and ukuran_baru > 0:
+                            break
+                        ukuran_lama = ukuran_baru
+                        time.sleep(0.2)
+                    except OSError:
+                        break
+
+                print('⚡ Menjalankan Engine Kompresi & Penajaman Gambar MRH Digital (RAM Mode)...')
+                
+                # 🛠️ TWEAK RESOLUSI, KONTRAS & KETAJAMAN HQ
                 with Image.open(ss_terbaru) as img:
-                    # Konversi ke mode RGB jika formatnya PNG agar bisa disimpan sebagai JPEG kompresi tinggi
                     if img.mode in ("RGBA", "P"):
                         img = img.convert("RGB")
                     
-                    # Batasi resolusi maksimal lebar ke 1600px biar pixel text kecil gak pecah/buram
+                    # Batasi resolusi maksimal lebar ke 1600px biar proporsional
                     max_size = 1600
                     if img.width > max_size:
                         ratio = max_size / float(img.width)
                         new_height = int(float(img.height) * float(ratio))
                         img = img.resize((max_size, new_height), Image.Resampling.LANCZOS)
                     
-                    # Simpan hasil kompresi langsung ke memory RAM buffer (Kualitas dinaikkan ke 95% anti-Gagal Scan)
+                    # 🔥 OPTIMASI 3: Dongkrak Kontras & Ketajaman Teks Angka Kecil game RoK
+                    enhancer_kontras = ImageEnhance.Contrast(img)
+                    img = enhancer_kontras.enhance(1.4)  # Naikkan kontras 40%
+                    
+                    enhancer_tajam = ImageEnhance.Sharpness(img)
+                    img = enhancer_tajam.enhance(2.0)    # Pertajam tepi font angka 2x lipat
+                    
+                    # Simpan hasil kompresi langsung ke memory RAM buffer
                     buffer = BytesIO()
-                    img.save(buffer, format="JPEG", quality=95, optimize=True)
+                    img.save(buffer, format="JPEG", quality=90, optimize=True)
                     nilai_mentah_b64 = buffer.getvalue()
                 
                 # Encode hasil kompresi memori RAM ke Base64 text string
@@ -168,7 +200,7 @@ while True:
                         f.write(nama_file)
                     print('✅ Transaksi Sukses! Data masuk Database.')
                     
-                    # 🗑️ AUTO-CLEAN GALLERY: Langsung hapus file fisik asli dari HP pembeli agar storage lega
+                    # 🗑️ AUTO-CLEAN GALLERY: Langsung hapus file fisik asli dari HP
                     try:
                         if os.path.exists(ss_terbaru):
                             os.remove(ss_terbaru)
@@ -182,4 +214,5 @@ while True:
     except Exception as e:
         print(f'❌ Sistem Mengalami Gangguan: {e}')
         
-    time.sleep(3)
+    # 🔥 OPTIMASI 4: Naikkan jeda jadi 5 detik agar Apps Script punya waktu bernapas memperbarui hash_waktu
+    time.sleep(5)
