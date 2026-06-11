@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/data/data/com.termux/files/usr/bin/bash
 
 # Warna teks untuk estetika Termux
 G="\033[0;32m" # Hijau
@@ -14,70 +14,71 @@ echo -e "${G}   ██║██╔████╔██║██████╔�
 echo -e "${G}   ██║██║╚██╔╝██║██╔══██╗██╔══██║    ██║  ██║██║██║   ██║${N}"
 echo -e "${G}   ██║██║ ╚═╝ ██║██║  ██║██║  ██║    ██████╔╝██║╚██████╔╝${N}"
 echo -e "${G}=======================================================${N}"
-echo -e "${G}      AUTO-INSTALLER BOT SUPREME v56 BY MRH DIGITAL    ${N}"
+echo -e "${G}       AUTO-INSTALLER BOT SUPREME v56 BY MRH DIGITAL    ${N}"
 echo -e "${G}=======================================================${N}"
 echo ""
 
-# 1. Update system & install package bawaan + Dependensi Kompresi Gambar
-echo -e "${G}[1/5] Memperbarui sistem Termux & menginstal core packages...${N}"
-# FIX: Menggunakan apt update & apt full-upgrade agar sinkronisasi pustaka SSL/Curl tidak tabrakan dan aman dari dpkg error
-apt update && apt full-upgrade -y
+# 1. SETUP STORAGE DI PALING ATAS (ANTI GEMBOK/ANTI GANTUNG)
+echo -e "${G}[1/5] Mengonfigurasi perizinan memori internal HP...${N}"
+echo -e "${Y}⚠️  MOHON KLIK 'IZINKAN / ALLOW' PADA POP-UP DI HP KAMU SEBENTAR LAGI!${N}"
+termux-setup-storage
+sleep 3
 
-# Pastikan core package terpasang sempurna
+# Trik menyegarkan jalur filesystem Android agar langsung sinkron
+am broadcast -a android.intent.action.MEDIA_MOUNTED -d file:///sdcard &> /dev/null
+
+# 2. PINDAH KE HOME & MANDATORI SAPU BERSIH FOLDER LAMA
+cd $HOME
+echo -e "${G}[2/5] Membersihkan sisa-sisa instalasi folder lama...${N}"
+# Paksa hapus total tanpa syarat gantung agar git clone 100% anti-gagal
+if [ -d "tools_rok_calculator_rss" ]; then
+    echo -e "${Y}🧹 Menghapus folder tools versi lama secara permanen...${N}"
+    rm -rf tools_rok_calculator_rss
+fi
+
+# 3. UPDATE SYSTEM & DEPENDENSI INTI
+echo -e "${G}[3/5] Memperbarui sistem Termux & menginstal core packages...${N}"
+apt update && apt full-upgrade -y
 pkg install python git termux-api libjpeg-turbo zlib -y
 
-# 2. Setup Storage (Meminta izin akses folder Galeri HP)
-echo -e "${G}[2/5] Mengonfigurasi perizinan memori internal HP...${N}"
-echo -e "${Y}⚠️  MOHON KLIK 'IZINKAN / ALLOW' PADA POP-UP DI HP KAMU SEBENTAR LAGI!${N}"
-sleep 2
-termux-setup-storage
-
-# Upgrade pip ke versi paling gres
-echo -e "${G}[3/5] Menginstal library Python tingkat lanjut (RAM Mode)...${N}"
+# Upgrade pip dan pasang library Pillow RAM Mode + Requests
 pip install --upgrade pip
-
-# Install requests untuk koneksi server dan Pillow untuk engine kompresi gambar
 pip install requests pillow
 
-# 3. Pindah ke direktori HOME untuk proses pembersihan folder lama
-cd ~
-
-# Hapus folder lama jika ada di HOME (Proses update / fresh install)
-if [ -d "tools_rok_calculator_rss" ] && [ "$PWD" != "$HOME/tools_rok_calculator_rss" ]; then
-    echo -e "${Y}🧹 Menghapus folder tools versi lama...${N}"
-    rm -rf ~/tools_rok_calculator_rss
-fi
-
-# Clone repository fresh dari Github MRH Project
-echo -e "${G}[4/5] Mengunduh script bot dari server GitHub...${N}"
+# 4. CLONE REPOSITORY FRESH DARI GITHUB
+echo -e "${G}[4/5] Mengunduh script bot murni dari server GitHub...${N}"
 git clone https://github.com/mrhproject/tools_rok_calculator_rss.git
 
-# 4. Suntik otomatis alias mrh_update_stock ke .bashrc
-echo -e "${G}[5/5] Memasang sistem pintasan alias 'mrh_update_stock'...${N}"
-if [ ! -f ~/.bashrc ]; then
-    touch ~/.bashrc
+# 5. REGISTER PERINTAH SAKTI GLOBAL (BISA DIPANGGIL DARI MANA SAJA LAH!)
+echo -e "${G}[5/5] Memasang sistem eksekusi global 'mrh_update_stock'...${N}"
+
+# Bersihkan sisa-sisa gantung alias lama di .bashrc agar tidak menumpuk sampah kode
+if [ -f ~/.bashrc ]; then
+    sed -i '/alias mrh_update_stock/d' ~/.bashrc
 fi
 
-# Bersihkan alias lama jika ada untuk menghindari duplikasi kode di .bashrc
-sed -i '/alias mrh_update_stock/d' ~/.bashrc
+# Hapus shortcut bin lama jika terdeteksi
+if [ -f "$PREFIX/bin/mrh_update_stock" ]; then
+    rm -f $PREFIX/bin/mrh_update_stock
+fi
 
-# Masukkan perintah alias baru
-echo "alias mrh_update_stock='cd ~/tools_rok_calculator_rss && python bot_rok.py'" >> ~/.bashrc
-echo -e "${G}✅ Alias 'mrh_update_stock' berhasil dipasang ke sistem!${N}"
+# Buat file perintah langsung ke direktori binary utama Termux ($PREFIX/bin)
+echo '#!/data/data/com.termux/files/usr/bin/bash' > $PREFIX/bin/mrh_update_stock
+echo 'cd $HOME/tools_rok_calculator_rss && python bot_rok.py' >> $PREFIX/bin/mrh_update_stock
 
-# Amankan konfigurasi
-source ~/.bashrc &> /dev/null
+# Berikan izin eksekusi penuh ke sistem Termux
+chmod +x $PREFIX/bin/mrh_update_stock
 
 echo ""
 echo -e "${G}=======================================================${N}"
-echo -e "${G} 🎉 PROSES INSTALASI SELESAI, BRE! GAS RUNNING...${N}"
+echo -e "${G} 🎉 PROSES INSTALASI SELESAI SAKTI TANPA DRAMA, BRE!${N}"
 echo -e "${G}=======================================================${N}"
-echo -e "${Y}💡 TIPS PINTASAN:${N}"
-echo -e "Mulai sekarang, untuk menyalakan bot cukup buka Termux dan ketik: ${G}mrh_update_stock${N}"
+echo -e "${Y}💡 TIPS PINTASAN GLOBAL:${N}"
+echo -e "Sekarang, dari folder mana saja, cukup ketik: ${G}mrh_update_stock${N}"
 echo -e "${G}=======================================================${N}"
-echo "🚀 Membuka folder dan menjalankan bot pertama kali..."
+echo "🚀 Langsung menyalakan mesin bot pertama kali..."
 echo ""
-sleep 2
+sleep 1.5
 
-# 5. Pindah ke folder dan langsung jalankan bot
-cd ~/tools_rok_calculator_rss && python bot_rok.py
+# Eksekusi langsung perintah global yang baru kita buat
+mrh_update_stock
