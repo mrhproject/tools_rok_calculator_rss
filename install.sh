@@ -15,12 +15,13 @@ echo -e "${G}   ██║██║╚██╔╝██║██╔══██�
 echo -e "${G}   ██║██║ ╚═╝ ██║██║  ██║██║  ██║    ██████╔╝██║╚██████╔╝${N}"
 echo -e "${G}=======================================================${N}"
 echo -e "${G}       AUTO-INSTALLER BOT SUPREME v56 BY MRH DIGITAL    ${N}"
+echo -e "${G}         [EDISI STABIL OPTIMASI DEPENDENSI PILLOW]       ${N}"
 echo -e "${G}=======================================================${N}"
 echo ""
 
 # 1. SETUP STORAGE DI PALING ATAS (ANTI GEMBOK/ANTI GANTUNG)
 echo -e "${G}[1/5] Mengonfigurasi perizinan memori internal HP...${N}"
-echo -e "${Y}⚠️  MOHON KLIK 'IZINKAN / ALLOW' PADA POP-UP DI HP KAMU SEBENTAR LAGI!${N}"
+echo -e "${Y}⚠️  MOHON KLIK 'IZINKAN / ALLOW' PADA POP-UP DI HP KAMU SEBENTAR LARI!${N}"
 termux-setup-storage
 sleep 3
 
@@ -30,34 +31,37 @@ am broadcast -a android.intent.action.MEDIA_MOUNTED -d file:///sdcard &> /dev/nu
 # 2. PINDAH KE HOME & MANDATORI SAPU BERSIH FOLDER LAMA
 cd $HOME
 echo -e "${G}[2/5] Membersihkan sisa-sisa instalasi folder lama...${N}"
-# Paksa hapus total tanpa syarat gantung agar git clone 100% anti-gagal
 if [ -d "tools_rok_calculator_rss" ]; then
     echo -e "${Y}🧹 Menghapus folder tools versi lama secara permanen...${N}"
     rm -rf tools_rok_calculator_rss
 fi
 
-# 3. UPDATE SYSTEM & DEPENDENSI INTI
+# 3. UPDATE SYSTEM & DEPENDENSI INTI (DENGAN FIX COMPILER PILLOW)
 echo -e "${G}[3/5] Memperbarui sistem Termux & menginstal core packages...${N}"
 apt update && apt full-upgrade -y
-pkg install python git termux-api libjpeg-turbo zlib -y
 
-# Upgrade pip dan pasang library Pillow RAM Mode + Requests
+# Tambahan libjpeg-turbo-dev & zlib-dev wajib agar Pillow tidak error saat di-compile di Android baru
+pkg install python git termux-api libjpeg-turbo libjpeg-turbo-dev zlib zlib-dev binutils -y
+
+# Upgrade pip ke versi paling stabil
 pip install --upgrade pip
-pip install requests pillow
+
+# Paksa pasang requests dan pillow dengan opsi pre-built wheel jika tersedia agar instan
+echo -e "${G}⏳ Memasang pustaka Python (Requests & Pillow RAM Mode)...${N}"
+pip install requests
+pip install pillow --no-cache-dir
 
 # 4. CLONE REPOSITORY FRESH DARI GITHUB
 echo -e "${G}[4/5] Mengunduh script bot murni dari server GitHub...${N}"
 git clone https://github.com/mrhproject/tools_rok_calculator_rss.git
 
-# 5. REGISTER PERINTAH SAKTI GLOBAL (BISA DIPANGGIL DARI MANA SAJA LAH!)
+# 5. REGISTER PERINTAH SAKTI GLOBAL
 echo -e "${G}[5/5] Memasang sistem eksekusi global 'mrh_update_stock'...${N}"
 
-# Bersihkan sisa-sisa gantung alias lama di .bashrc agar tidak menumpuk sampah kode
 if [ -f ~/.bashrc ]; then
     sed -i '/alias mrh_update_stock/d' ~/.bashrc
 fi
 
-# Hapus shortcut bin lama jika terdeteksi
 if [ -f "$PREFIX/bin/mrh_update_stock" ]; then
     rm -f $PREFIX/bin/mrh_update_stock
 fi
