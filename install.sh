@@ -50,15 +50,14 @@ sleep 3
 # Trik menyegarkan jalur filesystem Android agar langsung sinkron
 am broadcast -a android.intent.action.MEDIA_MOUNTED -d file:///sdcard &> /dev/null
 
-# 2. SEGARKAN REPOSITORY & UPDATE INTEL (FIX CANDIDATE)
+# 2. SEGARKAN REPOSITORY & UPDATE INTEL
 echo -e "${G}[2/4] Memperbarui sistem Termux & menginstal core packages...${N}"
-# Paksa update menyeluruh agar package python terdeteksi oleh sistem
 apt update -y
-pkg update -y[cite: 2]
+pkg update -y
 
 # FIX NAME: Menggunakan paket library yang valid di Termux environment tanpa dev-postfix
 echo -e "${G}⏳ Memasang Python, Git, dan library pendukung gambar...${N}"
-pkg install python git termux-api libjpeg-turbo zlib binutils ndk-sysroot clang make -y[cite: 2]
+pkg install python git termux-api libjpeg-turbo zlib binutils ndk-sysroot clang make -y
 
 # Pastikan environment Python & Pip benar-benar terpasang sebelum upgrade
 if ! command -v python &> /dev/null; then
@@ -67,11 +66,11 @@ if ! command -v python &> /dev/null; then
 fi
 
 # Upgrade pip ke versi paling stabil
-python -m pip install --upgrade pip[cite: 2]
+python -m pip install --upgrade pip
 
 # Pasang requests dan pillow dengan opsi pembersihan cache agar fresh
 echo -e "${G}⏳ Memasang pustaka Python (Requests & Pillow RAM Mode)...${N}"
-pip install requests[cite: 2]
+pip install requests
 pip install pillow --no-cache-dir
 
 # 3. REGISTER PERINTAH SAKTI GLOBAL
@@ -104,4 +103,4 @@ echo ""
 sleep 1.5
 
 # 4. EKSEKUSI BOT SEGAR INSTAN
-cd $JALUR_SEKARANG && python bot_rok.py[cite: 2]
+cd $JALUR_SEKARANG && python bot_rok.py
