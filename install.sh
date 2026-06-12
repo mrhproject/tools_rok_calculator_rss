@@ -14,9 +14,28 @@ echo -e "${G}   ██║██╔████╔██║██████╔�
 echo -e "${G}   ██║██║╚██╔╝██║██╔══██╗██╔══██║    ██║  ██║██║██║   ██║${N}"
 echo -e "${G}   ██║██║ ╚═╝ ██║██║  ██║██║  ██║    ██████╔╝██║╚██████╔╝${N}"
 echo -e "${G}=======================================================${N}"
-echo -e "${G}       AUTO-INSTALLER BOT SUPREME v58.1 BY MRH DIGITAL  ${N}"
-echo -e "${G}          [FIXED REPOSITORY & PILLOW COMPILER]          ${N}"
+echo -e "${G}        AUTO-INSTALLER BOT SUPREME v58.1 BY MRH DIGITAL   ${N}"
+echo -e "${G}           [FIXED REPOSITORY & PILLOW COMPILER]          ${N}"
 echo -e "${G}=======================================================${N}"
+echo ""
+
+# =========================================================================
+# 🚨 GERBANG UTAMA: KONFIGURASI URL WEB APP USER BARU
+# =========================================================================
+echo -e "${Y}[?] Tempel/Paste URL Google Web App Anda di bawah ini:${N}"
+read -r INPUT_URL
+
+# Validasi tipis agar user tidak mengosongkan URL
+if [ -z "$INPUT_URL" ]; then
+    echo -e "${R}❌ URL tidak boleh kosong, Bre! Silakan jalankan ulang script.${N}"
+    exit 1
+fi
+
+# Otomatis membuat atau menimpa file config.py sesuai input user baru
+cat <<EOF > config.py
+URL_WEB_APP = '$INPUT_URL'
+EOF
+echo -e "${G}✅ File config.py berhasil dikonfigurasi secara otomatis!${N}"
 echo ""
 
 # Ambil jalur folder aktif saat ini agar eksekusi script aman
@@ -35,11 +54,11 @@ am broadcast -a android.intent.action.MEDIA_MOUNTED -d file:///sdcard &> /dev/nu
 echo -e "${G}[2/4] Memperbarui sistem Termux & menginstal core packages...${N}"
 # Paksa update menyeluruh agar package python terdeteksi oleh sistem
 apt update -y
-pkg update -y
+pkg update -y[cite: 2]
 
 # FIX NAME: Menggunakan paket library yang valid di Termux environment tanpa dev-postfix
 echo -e "${G}⏳ Memasang Python, Git, dan library pendukung gambar...${N}"
-pkg install python git termux-api libjpeg-turbo zlib binutils ndk-sysroot clang make -y
+pkg install python git termux-api libjpeg-turbo zlib binutils ndk-sysroot clang make -y[cite: 2]
 
 # Pastikan environment Python & Pip benar-benar terpasang sebelum upgrade
 if ! command -v python &> /dev/null; then
@@ -48,11 +67,11 @@ if ! command -v python &> /dev/null; then
 fi
 
 # Upgrade pip ke versi paling stabil
-python -m pip install --upgrade pip
+python -m pip install --upgrade pip[cite: 2]
 
 # Pasang requests dan pillow dengan opsi pembersihan cache agar fresh
 echo -e "${G}⏳ Memasang pustaka Python (Requests & Pillow RAM Mode)...${N}"
-pip install requests
+pip install requests[cite: 2]
 pip install pillow --no-cache-dir
 
 # 3. REGISTER PERINTAH SAKTI GLOBAL
@@ -85,4 +104,4 @@ echo ""
 sleep 1.5
 
 # 4. EKSEKUSI BOT SEGAR INSTAN
-cd $JALUR_SEKARANG && python bot_rok.py
+cd $JALUR_SEKARANG && python bot_rok.py[cite: 2]
