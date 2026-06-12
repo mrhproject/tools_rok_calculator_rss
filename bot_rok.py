@@ -53,16 +53,16 @@ def tampilkan_logo():
     N = "\033[0m"     # Normal
     
     logo = f"""
-{G}███╗   ███╗██████╗       ██╗  ██╗    ██████╗ ██╗ ██████╗ ██╗████████╗ █████╗ ██╗     
-████╗ ████║██╔══██╗      ██║  ██║    ██╔══██╗██║██╔════╝ ██║╚══██╔══╝██╔══██╗██║     
-██╔████╔██║██████╔╝      ███████║    ██║  ██║██║██║  ███╗██║   ██║   ███████║██║     
-██║╚██╔╝██║██╔══██╗      ██╔══██║    ██║  ██║██║██║   ██║██║   ██║   ██╔══██║██║     
-██║ ╚═╝ ██║██║  ██║      ██║  ██║    ██████╔╝██║╚██████╔╝██║   ██║   ██║  ██║███████╗
-╚═╝     ╚═╝╚═╝  ╚═╝      ╚═╝  ╚═╝    ╚═════╝ ╚═╝ ╚═════╝ ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝{N}
+{G}███╗   ███╗██████╗       ██╗  ██╗     ██████╗ ██╗ ██████╗ ██╗████████╗ █████╗ ██╗     
+████╗ ████║██╔══██╗      ██║  ██║     ██╔══██╗██║██╔════╝ ██║╚══██╔══╝██╔══██╗██║     
+██╔████╔██║██████╔╝      ███████║     ██║  ██║██║██║  ███╗██║   ██║   ███████║██║     
+██║╚██╔╝██║██╔══██╗      ██╔══██║     ██║  ██║██║██║   ██║██║   ██║   ██╔══██║██║     
+██║ ╚═╝ ██║██║  ██║      ██║  ██║     ██████╔╝██║╚██████╔╝██║   ██║   ██║  ██║███████╗
+╚═╝     ╚═╝╚═╝  ╚═╝      ╚═╝  ╚═╝     ╚═════╝ ╚═╝ ╚═════╝ ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝{N}
                                     
-                ✨ ᴹʳ 𝐇 𝐃𝐢𝐠𝐢𝐭𝐚 l ࿐ ✨
-             🤖 AI-Universal Auto-RSS Standby 🤖
-          [MODE SUPREME SPEED & AUTO-CLEAN HQ AKTIF]
+                 ✨ ᴹʳ 𝐇 𝐃𝐢𝐠𝐢𝐭𝐚 l ࿐ ✨
+              🤖 AI-Universal Auto-RSS Standby 🤖
+          [MODE SANDBOX UJI COBA CROP ADAPTIF AKTIF]
 ===================================================================================
 🔑 {Y}ID PERANGKAT ABADI (KTP): {DEVICE_UNIQUE_ID}{N}
 ===================================================================================
@@ -102,20 +102,18 @@ file_log = '.terakhir_dikirim.txt'
 
 print('🤖 [START] Bot RoK Auto-Standby AI-Universal Supreme Aktif...')
 print(f'🎯 Folder Pantauan: {FOLDER_TARGET}')
-print('⏳ Siap siaga! Cukup lakukan screenshot di game RoK, data meluncur otomatis...\n')
+print('⏳ Siap siaga! Silakan ambil screenshot tabel SDA di RoK untuk menguji hasil crop...\n')
 
-# Kumpulan format gambar yang diizinkan (Set murni agar pencarian instan)
 VALID_EXTENSIONS = {'.jpg', '.jpeg', '.png'}
 
 # =========================================================================
-# 🔄 MONITORING LOOP RUNTIME (OPTIMIZED VERSION v5.0)
+# 🔄 MONITORING LOOP RUNTIME (UJI COBA CROP ADAPTIF TAB & HP)
 # =========================================================================
 while True:
     try:
         terbaru_entry = None
         terbaru_ctime = 0
         
-        # 🔥 OPTIMASI 1: Ganti glob kaku dengan os.scandir (Baterai awet, RAM adem)
         if os.path.exists(FOLDER_TARGET):
             with os.scandir(FOLDER_TARGET) as entries:
                 for entry in entries:
@@ -126,23 +124,20 @@ while True:
                                 terbaru_ctime = file_ctime
                                 terbaru_entry = entry
                         except OSError:
-                            continue  # Lewati jika file sedang dikunci sistem Android
+                            continue
 
         if terbaru_entry:
             ss_terbaru = terbaru_entry.path
             nama_file = terbaru_entry.name
             
-            # Baca logs riwayat
             last_sent = ''
             if os.path.exists(file_log):
                 with open(file_log, 'r', encoding='utf-8') as f:
                     last_sent = f.read().strip()
             
-            # Deteksi jika benar-benar ada jepretan baru
             if nama_file != last_sent:
                 print(f'📸 Terdeteksi SS Baru: {nama_file}')
                 
-                # 🔥 OPTIMASI 2: Tunggu sampai Android selesai menulis gambar ke memori (Anti-Corrupt)
                 time.sleep(0.5)
                 ukuran_lama = -1
                 while True:
@@ -155,33 +150,45 @@ while True:
                     except OSError:
                         break
 
-                print('⚡ Menjalankan Engine Kompresi & Penajaman Gambar MRH Digital (RAM Mode)...')
+                print('⚡ Menjalankan Engine Crop Adaptif & Penajaman Tabel SDA (RAM Mode)...')
                 
-                # 🛠️ TWEAK RESOLUSI, KONTRAS & KETAJAMAN HQ
                 with Image.open(ss_terbaru) as img:
                     if img.mode in ("RGBA", "P"):
                         img = img.convert("RGB")
                     
-                    # Batasi resolusi maksimal lebar ke 1600px biar proporsional
-                    max_size = 1600
-                    if img.width > max_size:
-                        ratio = max_size / float(img.width)
-                        new_height = int(float(img.height) * float(ratio))
-                        img = img.resize((max_size, new_height), Image.Resampling.LANCZOS)
+                    # Mendapatkan resolusi asli HP / Tab yang digunakan secara dinamis
+                    W, H = img.width, img.height
                     
-                    # 🔥 OPTIMASI 3: Dongkrak Kontras & Ketajaman Teks Angka Kecil game RoK
-                    enhancer_kontras = ImageEnhance.Contrast(img)
-                    img = enhancer_kontras.enhance(1.4)  # Naikkan kontras 40%
+                    # 🎯 FORMULA CROP UNIVERSAL: Mengunci area tengah agak ke kanan tempat tabel statistik berada.
+                    # Formula ini dirancang agar aman baik di layar lebar HP memanjang maupun rasio kotak Tablet/Tab.
+                    left = int(W * 0.18)
+                    top = int(H * 0.05)
+                    right = int(W * 0.82)
+                    bottom = int(H * 0.92)
                     
-                    enhancer_tajam = ImageEnhance.Sharpness(img)
-                    img = enhancer_tajam.enhance(2.0)    # Pertajam tepi font angka 2x lipat
+                    img_cropped = img.crop((left, top, right, bottom))
                     
-                    # Simpan hasil kompresi langsung ke memory RAM buffer
+                    # Perbesar resolusi hasil potongan agar font angka gajah stabil saat dibaca server
+                    max_size = 1400
+                    if img_cropped.width > max_size:
+                        ratio = max_size / float(img_cropped.width)
+                        new_height = int(float(img_cropped.height) * float(ratio))
+                        img_cropped = img_cropped.resize((max_size, new_height), Image.Resampling.LANCZOS)
+                    
+                    # 🔥 PROSES PENAJAMAN TEKS TABEL STATISTIK
+                    # Naikkan kontras 60% agar warna font angka putih terisolasi tajam dari background biru
+                    enhancer_kontras = ImageEnhance.Contrast(img_cropped)
+                    img_cropped = enhancer_kontras.enhance(1.6)
+                    
+                    # Pertajam tepi font angka game 2.5x lipat
+                    enhancer_tajam = ImageEnhance.Sharpness(img_cropped)
+                    img_cropped = enhancer_tajam.enhance(2.5)
+                    
+                    # Simpan hasil olahan langsung ke RAM Buffer
                     buffer = BytesIO()
-                    img.save(buffer, format="JPEG", quality=90, optimize=True)
+                    img_cropped.save(buffer, format="JPEG", quality=90, optimize=True)
                     nilai_mentah_b64 = buffer.getvalue()
                 
-                # Encode hasil kompresi memori RAM ke Base64 text string
                 encoded = base64.b64encode(nilai_mentah_b64).decode('utf-8')
                 
                 payload = {
@@ -190,21 +197,27 @@ while True:
                     'user_id': DEVICE_UNIQUE_ID
                 }
                 
-                print('🚀 Mentransfer paket data mini ke Cloud Sheets...')
+                print('🚀 Mengirim paket uji coba gambar ke GAS Sandbox...')
                 headers = {'Content-Type': 'application/json'}
                 response = requests.post(URL_WEB_APP, data=json.dumps(payload), headers=headers, timeout=25)
                 
-                # Eksekusi aksi pasca sukses terkirim
                 if response.status_code == 200:
                     with open(file_log, 'w', encoding='utf-8') as f:
                         f.write(nama_file)
-                    print('✅ Transaksi Sukses! Data masuk Database.')
                     
-                    # 🗑️ AUTO-CLEAN GALLERY: Langsung hapus file fisik asli dari HP
+                    print('📥 --- RESPON HASIL SCAN SERAVAH DARI CLOUD ---')
+                    try:
+                        res_json = response.json()
+                        print(res_json.get("teks_hasil_ocr_mentah", "Teks kosong!"))
+                    except:
+                        print(response.text)
+                    print('-----------------------------------------------')
+                    
+                    # 🗑️ AUTO-CLEAN GALLERY
                     try:
                         if os.path.exists(ss_terbaru):
                             os.remove(ss_terbaru)
-                            print('🗑️ [AUTO-CLEAN] Berhasil menghapus file fisik sampah dari galeri.')
+                            print('🗑️ [AUTO-CLEAN] File fisik dibersihkan dari galeri.')
                     except Exception as err_del:
                         print(f'⚠️ Gagal menghapus file fisik: {err_del}')
                         
@@ -214,5 +227,4 @@ while True:
     except Exception as e:
         print(f'❌ Sistem Mengalami Gangguan: {e}')
         
-    # 🔥 OPTIMASI 4: Naikkan jeda jadi 5 detik agar Apps Script punya waktu bernapas memperbarui hash_waktu
     time.sleep(5)
