@@ -14,15 +14,15 @@ echo -e "${G}   ██║██╔████╔██║██████╔�
 echo -e "${G}   ██║██║╚██╔╝██║██╔══██╗██╔══██║    ██║  ██║██║██║   ██║${N}"
 echo -e "${G}   ██║██║ ╚═╝ ██║██║  ██║██║  ██║    ██████╔╝██║╚██████╔╝${N}"
 echo -e "${G}=======================================================${N}"
-echo -e "${G}       AUTO-INSTALLER BOT SUPREME v58 BY MRH DIGITAL    ${N}"
-echo -e "${G}         [EDISI STABIL OPTIMASI DEPENDENSI PILLOW]       ${N}"
+echo -e "${G}       AUTO-INSTALLER BOT SUPREME v58.1 BY MRH DIGITAL  ${N}"
+echo -e "${G}          [FIXED REPOSITORY & PILLOW COMPILER]          ${N}"
 echo -e "${G}=======================================================${N}"
 echo ""
 
 # Ambil jalur folder aktif saat ini agar eksekusi script aman
 JALUR_SEKARANG=$(pwd)
 
-# 1. SETUP STORAGE DI PALING ATAS (ANTI GEMBOK/ANTI GANTUNG)
+# 1. SETUP STORAGE DI PALING ATAS
 echo -e "${G}[1/4] Mengonfigurasi perizinan memori internal HP...${N}"
 echo -e "${Y}⚠️  MOHON KLIK 'IZINKAN / ALLOW' PADA POP-UP DI HP KAMU SEBENTAR LAGI!${N}"
 termux-setup-storage
@@ -31,15 +31,24 @@ sleep 3
 # Trik menyegarkan jalur filesystem Android agar langsung sinkron
 am broadcast -a android.intent.action.MEDIA_MOUNTED -d file:///sdcard &> /dev/null
 
-# 2. UPDATE SYSTEM & DEPENDENSI INTI (DENGAN FIX COMPILER PILLOW)
+# 2. SEGARKAN REPOSITORY & UPDATE INTEL (FIX CANDIDATE)
 echo -e "${G}[2/4] Memperbarui sistem Termux & menginstal core packages...${N}"
-apt update && apt full-upgrade -y
+# Paksa update menyeluruh agar package python terdeteksi oleh sistem
+apt update -y
+pkg update -y
 
-# Tambahan libjpeg-turbo-dev & zlib-dev wajib agar Pillow tidak error saat di-compile di Android baru
-pkg install python git termux-api libjpeg-turbo libjpeg-turbo-dev zlib zlib-dev binutils -y
+# FIX NAME: Menggunakan paket library yang valid di Termux environment tanpa dev-postfix
+echo -e "${G}⏳ Memasang Python, Git, dan library pendukung gambar...${N}"
+pkg install python git termux-api libjpeg-turbo zlib binutils ndk-sysroot clang make -y
+
+# Pastikan environment Python & Pip benar-benar terpasang sebelum upgrade
+if ! command -v python &> /dev/null; then
+    echo -e "${R}❌ Python gagal terpasang otomatis. Mencoba metode alternatif...${N}"
+    apt install python -y
+fi
 
 # Upgrade pip ke versi paling stabil
-pip install --upgrade pip
+python -m pip install --upgrade pip
 
 # Pasang requests dan pillow dengan opsi pembersihan cache agar fresh
 echo -e "${G}⏳ Memasang pustaka Python (Requests & Pillow RAM Mode)...${N}"
@@ -57,7 +66,7 @@ if [ -f "$PREFIX/bin/mrh_update_stock" ]; then
     rm -f $PREFIX/bin/mrh_update_stock
 fi
 
-# Buat file perintah langsung ke direktori binary utama Termux ($PREFIX/bin) menggunakan jalur dinamis
+# Buat file perintah langsung ke direktori binary utama Termux ($PREFIX/bin)
 echo '#!/data/data/com.termux/files/usr/bin/bash' > $PREFIX/bin/mrh_update_stock
 echo "cd $JALUR_SEKARANG && python bot_rok.py" >> $PREFIX/bin/mrh_update_stock
 
@@ -71,7 +80,7 @@ echo -e "${G}=======================================================${N}"
 echo -e "${Y}💡 TIPS PINTASAN GLOBAL:${N}"
 echo -e "Sekarang, dari folder mana saja, cukup ketik: ${G}mrh_update_stock${N}"
 echo -e "${G}=======================================================${N}"
-echo "🚀 Langsung menyalakan mesin bot pertama kali..."
+echo "🚀 Langsung menyalakan mesin bot..."
 echo ""
 sleep 1.5
 
