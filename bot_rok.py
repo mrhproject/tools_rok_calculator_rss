@@ -62,7 +62,7 @@ def tampilkan_logo():
                                     
                  ✨ ᴹʳ 𝐇 𝐃𝐢𝐠𝐢𝐭𝐚 l ࿐ ✨
               🤖 AI-Universal Auto-RSS Standby 🤖
-          [MODE SANDBOX UJI COBA CROP ADAPTIF AKTIF]
+          [SINKRONISASI AKTIF ENGINE MULTI-ACCOUNT API V58]
 ===================================================================================
 🔑 {Y}ID PERANGKAT ABADI (KTP): {DEVICE_UNIQUE_ID}{N}
 ===================================================================================
@@ -73,9 +73,44 @@ def verifikasi_user():
     G = "\033[0;32m"
     N = "\033[0m"
     print(f"{G}🔐 [SECURITY] Sistem Verifikasi Akses Mr H Digital{N}")
-    print("⏳ Memeriksa hak akses ke server Cloud...")
-    print(f"{G}✅ BYPASS HAK AKSES AKTIF! Selamat bekerja, Bre!{N}\n")
-    return True
+    print("⏳ Memeriksa status lisensi perangkat ke server Cloud...")
+    
+    # Menembak aksi verifikasi token murni ke GAS
+    try:
+        payload = {"user_id": DEVICE_UNIQUE_ID, "action": "verify"}
+        headers = {'Content-Type': 'application/json'}
+        response = requests.post(URL_WEB_APP, data=json.dumps(payload), headers=headers, timeout=15)
+        
+        if response.status_code == 200:
+            res_json = response.json()
+            status_api = res_json.get("status", "unknown")
+            
+            if status_api == "success":
+                print(f"{G}✅ AKSES AKTIF! Selamat bekerja, Bre!{N}\n")
+                return True
+            elif status_api == "pending":
+                print("\n🛑 [TERKUNCI] Token Anda masih berstatus PENDING. Butuh persetujuan Admin.")
+                return False
+            elif status_api == "registered":
+                print("\n🆕 [TERDAFTAR] Perangkat baru otomatis didaftarkan (PENDING). Hubungi Admin.")
+                return False
+            elif status_api == "expired":
+                print("\n🛑 [EXPIRED] Masa aktif Token/Device ID Anda telah habis!")
+                return False
+        
+        # Jika respon tidak standar, gunakan fallback bypass jika token milik boss besar
+        if DEVICE_UNIQUE_ID.lower() in ["admin", "pacul_budi"]:
+            print(f"{G}✅ BYPASS BOSS BESAR AKTIF! Selamat bekerja, Om Budi!{N}\n")
+            return True
+            
+        print("\n🛑 [GAGAL] Respon validasi dari server Cloud tidak cocok.")
+        return False
+    except Exception as e:
+        if DEVICE_UNIQUE_ID.lower() in ["admin", "pacul_budi"]:
+            print(f"{G}⚠️ Server Cloud RTO, Bypass Boss Besar Diaktifkan!{N}\n")
+            return True
+        print(f"\n❌ Gagal terhubung ke Server Verifikasi: {e}")
+        return False
 
 def cari_folder_ss_otomatis():
     posisi_pencarian = ['/sdcard/DCIM/', '/sdcard/Pictures/', '/sdcard/MyFiles/', '/sdcard/']
@@ -94,7 +129,7 @@ def cari_folder_ss_otomatis():
 tampilkan_logo()
 
 if not verifikasi_user():
-    print("\n🛑 [STOP] Program dihentikan otomatis.")
+    print("🛑 [STOP] Program dihentikan otomatis karena masalah perizinan.")
     sys.exit()
 
 FOLDER_TARGET = cari_folder_ss_otomatis()
@@ -102,12 +137,12 @@ file_log = '.terakhir_dikirim.txt'
 
 print('🤖 [START] Bot RoK Auto-Standby AI-Universal Supreme Aktif...')
 print(f'🎯 Folder Pantauan: {FOLDER_TARGET}')
-print('⏳ Siap siaga! Silakan ambil screenshot tabel SDA di RoK untuk menguji hasil crop...\n')
+print('⏳ Siap siaga! Silakan ambil screenshot tabel SDA di RoK untuk sinkronisasi...\n')
 
 VALID_EXTENSIONS = {'.jpg', '.jpeg', '.png'}
 
 # =========================================================================
-# 🔄 MONITORING LOOP RUNTIME (UJI COBA CROP ADAPTIF TAB & HP)
+# 🔄 MONITORING LOOP RUNTIME (DENGAN SINKRONISASI API PARSING JSON)
 # =========================================================================
 while True:
     try:
@@ -156,11 +191,9 @@ while True:
                     if img.mode in ("RGBA", "P"):
                         img = img.convert("RGB")
                     
-                    # Mendapatkan resolusi asli HP / Tab yang digunakan secara dinamis
                     W, H = img.width, img.height
                     
-                    # 🎯 FORMULA CROP UNIVERSAL: Mengunci area tengah agak ke kanan tempat tabel statistik berada.
-                    # Formula ini dirancang agar aman baik di layar lebar HP memanjang maupun rasio kotak Tablet/Tab.
+                    # 🎯 FORMULA CROP UNIVERSAL
                     left = int(W * 0.18)
                     top = int(H * 0.05)
                     right = int(W * 0.82)
@@ -168,7 +201,6 @@ while True:
                     
                     img_cropped = img.crop((left, top, right, bottom))
                     
-                    # Perbesar resolusi hasil potongan agar font angka gajah stabil saat dibaca server
                     max_size = 1400
                     if img_cropped.width > max_size:
                         ratio = max_size / float(img_cropped.width)
@@ -176,15 +208,12 @@ while True:
                         img_cropped = img_cropped.resize((max_size, new_height), Image.Resampling.LANCZOS)
                     
                     # 🔥 PROSES PENAJAMAN TEKS TABEL STATISTIK
-                    # Naikkan kontras 60% agar warna font angka putih terisolasi tajam dari background biru
                     enhancer_kontras = ImageEnhance.Contrast(img_cropped)
                     img_cropped = enhancer_kontras.enhance(1.6)
                     
-                    # Pertajam tepi font angka game 2.5x lipat
                     enhancer_tajam = ImageEnhance.Sharpness(img_cropped)
                     img_cropped = enhancer_tajam.enhance(2.5)
                     
-                    # Simpan hasil olahan langsung ke RAM Buffer
                     buffer = BytesIO()
                     img_cropped.save(buffer, format="JPEG", quality=90, optimize=True)
                     nilai_mentah_b64 = buffer.getvalue()
@@ -197,30 +226,49 @@ while True:
                     'user_id': DEVICE_UNIQUE_ID
                 }
                 
-                print('🚀 Mengirim paket uji coba gambar ke GAS Sandbox...')
+                print('🚀 Mengirim paket gambar ke Server Cloud API...')
                 headers = {'Content-Type': 'application/json'}
-                response = requests.post(URL_WEB_APP, data=json.dumps(payload), headers=headers, timeout=25)
+                response = requests.post(URL_WEB_APP, data=json.dumps(payload), headers=headers, timeout=30)
                 
                 if response.status_code == 200:
-                    with open(file_log, 'w', encoding='utf-8') as f:
-                        f.write(nama_file)
-                    
-                    print('📥 --- RESPON HASIL SCAN SERAVAH DARI CLOUD ---')
                     try:
                         res_json = response.json()
-                        print(res_json.get("teks_hasil_ocr_mentah", "Teks kosong!"))
-                    except:
-                        print(response.text)
-                    print('-----------------------------------------------')
-                    
-                    # 🗑️ AUTO-CLEAN GALLERY
-                    try:
-                        if os.path.exists(ss_terbaru):
-                            os.remove(ss_terbaru)
-                            print('🗑️ [AUTO-CLEAN] File fisik dibersihkan dari galeri.')
-                    except Exception as err_del:
-                        print(f'⚠️ Gagal menghapus file fisik: {err_del}')
+                        status_api = res_json.get("status", "unknown")
+                        pesan_api = res_json.get("message", "")
                         
+                        if status_api == "success":
+                            with open(file_log, 'w', encoding='utf-8') as f:
+                                f.write(nama_file)
+                            
+                            data_ext = res_json.get("data_ter_extract", {})
+                            print('\n📥 --- 🚀 [SUKSES] DATA MASUK DATABASE CLOUD ---')
+                            print(f'💬 Pesan: {pesan_api}')
+                            print(f'📍 Koordinat Terdeteksi : {data_ext.get("koordinat", "-")}')
+                            print(f'📊 Statistik Extracted  : Makanan={data_ext.get("food","0")}, Kayu={data_ext.get("kayu","0")}, Batu={data_ext.get("stone","0")}, Emas={data_ext.get("emas","0")}')
+                            print('-------------------------------------------------')
+                            
+                            # 🗑️ AUTO-CLEAN GALLERY
+                            if os.path.exists(ss_terbaru):
+                                os.remove(ss_terbaru)
+                                print('🗑️ [AUTO-CLEAN] File fisik dibersihkan dari galeri.')
+                                
+                        elif status_api == "pending":
+                            print('⚠️ [PERINGATAN] Akses Tertunda! Perangkat Anda masih berstatus PENDING di Google Sheet.')
+                            print('📢 Silakan hubungi Admin Master untuk diaktifkan aksesnya.')
+                            
+                        elif status_api == "registered":
+                            print('🆕 [PERANGKAT BARU] ID Anda terdaftar otomatis dengan status PENDING.')
+                            print('🔒 Mohon hubungi Boss Budi / Admin untuk disetujui.')
+                            
+                        elif status_api == "expired":
+                            print('🛑 [EXPIRED] Lisensi masa aktif token perangkat Anda telah habis!')
+                            
+                        else:
+                            print(f'❓ Respon Server Terbaca: {pesan_api}')
+                            
+                    except Exception as err_parse:
+                        print(f'❌ Gagal melakukan parsing data JSON dari server: {err_parse}')
+                        print(response.text)
                 else:
                     print(f'❌ Server Mengalami Kendala Respon HTTP: {response.status_code}')
                                         
