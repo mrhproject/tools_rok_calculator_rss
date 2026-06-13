@@ -12,7 +12,7 @@ try:
     from PIL import Image, ImageEnhance
 except ImportError:
     print("⏳ Menyiapkan library tambahan (requests & pillow)...")
-    os.system('pkg install libjpeg-turbo-dev zlib-dev -y &> /dev/null')
+    os.system('pkg install libjpeg-turbo zlib binutils -y &> /dev/null')
     os.system('pip install requests pillow &> /dev/null')
     import requests
     from PIL import Image, ImageEnhance
@@ -60,9 +60,9 @@ def tampilkan_logo():
 ██║ ╚═╝ ██║██║  ██║      ██║  ██║     ██████╔╝██║╚██████╔╝██║   ██║   ██║  ██║███████╗
 ╚═╝     ╚═╝╚═╝  ╚═╝      ╚═╝  ╚═╝     ╚═════╝ ╚═╝ ╚═════╝ ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝{N}
                                     
-                 ✨ ᴹʳ 𝐇 𝐃𝐢𝐠𝐢𝐭𝐚 l ࿐ ✨
-              🤖 AI-Universal Auto-RSS Standby 🤖
-          [SINKRONISASI AKTIF ENGINE MULTI-ACCOUNT API V58]
+                  ✨ ᴹʳ 𝐇 𝐃𝐢𝐠𝐢𝐭𝐚 l ࿐ ✨
+               🤖 AI-Universal Auto-RSS Standby 🤖
+           [SINKRONISASI AKTIF ENGINE MULTI-ACCOUNT API V58]
 ===================================================================================
 🔑 {Y}ID PERANGKAT ABADI (KTP): {DEVICE_UNIQUE_ID}{N}
 ===================================================================================
@@ -254,7 +254,6 @@ while True:
                                 
                         elif status_api == "pending":
                             print('⚠️ [PERINGATAN] Akses Tertunda! Perangkat Anda masih berstatus PENDING di Google Sheet.')
-                            print('📢 Silakan hubungi Admin Master untuk diaktifkan aksesnya.')
                             
                         elif status_api == "registered":
                             print('🆕 [PERANGKAT BARU] ID Anda terdaftar otomatis dengan status PENDING.')
